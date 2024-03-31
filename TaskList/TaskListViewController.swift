@@ -18,6 +18,7 @@ final class TaskListViewController: UITableViewController {
         setupNavigationBar()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
         fetchData()
+        
     }
     
     @objc private func addNewTask() {
@@ -49,14 +50,15 @@ final class TaskListViewController: UITableViewController {
         present(alert, animated: true)
     }
     
+
     private func save(_ taskName: String) {
         let task = ToDoTask(context: storageManager.persistentContainer.viewContext)
         task.title = taskName
         taskList.append(task)
-        
+
         let indexPath = IndexPath(row: taskList.count - 1, section: 0)
         tableView.insertRows(at: [indexPath], with: .automatic)
-        
+
         storageManager.saveContext()
     }
 }
@@ -75,6 +77,17 @@ extension TaskListViewController {
         cell.contentConfiguration = content
         return cell
     }
+    
+    ///delete
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            storageManager.deleteContext(taskList[indexPath.row])
+            
+            taskList.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+    }
+    
 }
 
 // MARK: - Setup UI

@@ -32,4 +32,10 @@ final class StorageManager {
         }
     }
     
+    func deleteContext(_ object: NSManagedObject) {
+        let context = persistentContainer.viewContext
+        context.delete(object)
+        saveContext()
+    }
+    
 }
